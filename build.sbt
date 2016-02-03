@@ -133,7 +133,7 @@ def IMCEThirdPartyProject(projectName: String, location: String): Project =
 lazy val aspectjLibs = IMCEThirdPartyProject("aspectj_libraries", "aspectjLibs")
   .settings(
     libraryDependencies ++= Seq(
-      "gov.nasa.jpl.imce.thirdParty" %% "scala-libraries" % Versions.scala_libraries % "provided" artifacts
+      "gov.nasa.jpl.imce.thirdParty" %% "scala-libraries" % Versions.scala_libraries % "compile" artifacts
         Artifact("scala-libraries", "zip", "zip", Some("resource"), Seq(), None, Map()),
 
       "org.aspectj" % "aspectjrt" % Versions.org_aspectj_version %
