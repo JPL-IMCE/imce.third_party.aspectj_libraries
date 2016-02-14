@@ -25,7 +25,13 @@ def IMCEThirdPartyProject(projectName: String, location: String): Project =
       IMCEKeys.licenseYearOrRange := "2015-2016",
       IMCEKeys.organizationInfo := IMCEPlugin.Organizations.thirdParty,
       git.baseVersion := Versions.version,
-      scalaVersion := Versions.scala_version
+      scalaVersion := Versions.scala_version,
+      projectID := {
+        val previous = projectID.value
+        previous.extra(
+          "build.date.utc" -> buildUTCDate.value,
+          "artifact.kind" -> "third_party.aggregate.libraries")
+      }
     )
     .settings(
 
@@ -168,7 +174,9 @@ def IMCEThirdPartyProject(projectName: String, location: String): Project =
 lazy val aspectjLibs = IMCEThirdPartyProject("aspectj_libraries", "aspectjLibs")
   .settings(
     libraryDependencies ++= Seq(
-      "gov.nasa.jpl.imce.thirdParty" %% "scala-libraries" % Versions_scala_libraries.version % "compile" artifacts
+      "gov.nasa.jpl.imce.thirdParty" %% "scala-libraries" % Versions_scala_libraries.version
+        extra("artifact.kind" -> "third_party.aggregate.libraries")
+        artifacts
         Artifact("scala-libraries", "zip", "zip", Some("resource"), Seq(), None, Map()),
 
       "org.aspectj" % "aspectjrt" % Versions.org_aspectj_version %
