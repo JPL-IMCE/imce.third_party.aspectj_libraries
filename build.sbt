@@ -69,15 +69,6 @@ def IMCEThirdPartyProject(projectName: String, location: String): Project =
         streams) map {
         (appC, cpT, up, s) =>
 
-          def getFileIfExists(f: File, where: String)
-          : Option[(File, String)] =
-            if (f.exists()) Some((f, s"$where/${f.getName}")) else None
-
-          val ivyHome: File =
-            Classpaths
-              .bootIvyHome(appC)
-              .getOrElse(sys.error("Launcher did not provide the Ivy home directory."))
-
           val libDir = location + "/lib/"
           val srcDir = location + "/lib.sources/"
           val docDir = location + "/lib.javadoc/"
@@ -114,13 +105,20 @@ def IMCEThirdPartyProject(projectName: String, location: String): Project =
               if "zip" == artifact.extension
               file <- {
                 s.log.info(s"compile: ${oReport.organization}, ${file.name}")
+                s.log.info(s"extra deps: ${mReport.module.extraDependencyAttributes}")
+                s.log.info(s"extra prop: ${mReport.module.extraAttributes}")
                 val graph = backend.SbtUpdateReport.fromConfigurationReport(compileConfig, mReport.module)
+                s.log.info(graph.nodes.mkString("graph nodes:\n","\n","\n"))
+                s.log.info(graph.edges.mkString("graph edges:\n","\n","\n"))
                 val roots: Set[Module] = graph.nodes.filter { m =>
                   m.id.organisation == mReport.module.organization &&
                     m.id.name == mReport.module.name &&
                     m.id.version == mReport.module.revision
                 }.to[Set]
-                val scope: Seq[Module] = transitiveScope(roots, graph).to[Seq].sortBy( m => m.id.organisation + m.id.name)
+                s.log.info(s"roots: ${roots.mkString(",")}")
+                val scope: Seq[Module] =
+                  transitiveScope(roots, graph).to[Seq].sortBy( m => m.id.organisation + m.id.name)
+                s.log.info(s"scope: ${scope.mkString(",")}")
                 val files = scope.flatMap { m: Module => m.jarFile }.to[Seq].sorted
                 s.log.info(s"Excluding ${files.size} jars from zip aggregate resource dependencies")
                 files.foreach { f =>
@@ -175,7 +173,7 @@ lazy val aspectjLibs = IMCEThirdPartyProject("aspectj_libraries", "aspectjLibs")
   .settings(
     libraryDependencies ++= Seq(
       "gov.nasa.jpl.imce.thirdParty" %% "scala-libraries" % Versions_scala_libraries.version
-        extra("artifact.kind" -> "third_party.aggregate.libraries")
+        % "compile"
         artifacts
         Artifact("scala-libraries", "zip", "zip", Some("resource"), Seq(), None, Map()),
 
