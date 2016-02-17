@@ -2,7 +2,7 @@
 object Versions {
 
   // this project's version
-  val version = "2.3.4"
+  val version = "2.3.5"
   val scala_version = "2.11.7"
 
   // aspectj
