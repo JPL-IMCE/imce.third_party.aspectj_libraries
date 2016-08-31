@@ -4,16 +4,7 @@ import net.virtualvoid.sbt.graph._
 
 import gov.nasa.jpl.imce.sbt._
 
-useGpg := true
-
 updateOptions := updateOptions.value.withCachedResolution(true)
-
-developers := List(
-  Developer(
-    id="rouquett",
-    name="Nicolas F. Rouquette",
-    email="nicolas.f.rouquette@jpl.nasa.gov",
-    url=url("https://gateway.jpl.nasa.gov/personal/rouquett/default.aspx")))
 
 val resourceArtifact = settingKey[Artifact]("Specifies the project's resource artifact")
 
@@ -170,11 +161,13 @@ def IMCEThirdPartyProject(projectName: String, location: String): Project =
 
 lazy val aspectjLibs = IMCEThirdPartyProject("aspectj_libraries", "aspectjLibs")
   .settings(
+    resolvers += Resolver.bintrayRepo("jpl-imce", "gov.nasa.jpl.imce"),
+
     libraryDependencies ++= Seq(
-      "gov.nasa.jpl.imce.thirdParty" %% "scala-libraries" % Versions_scala_libraries.version
+      "gov.nasa.jpl.imce" %% "imce.third_party.scala_libraries" % Versions_scala_libraries.version
         % "compile"
         artifacts
-        Artifact("scala-libraries", "zip", "zip", Some("resource"), Seq(), None, Map()),
+        Artifact("imce.third_party.scala_libraries", "zip", "zip", Some("resource"), Seq(), None, Map()),
 
       "org.aspectj" % "aspectjrt" % Versions.org_aspectj_version %
       "compile" withSources() withJavadoc(),
