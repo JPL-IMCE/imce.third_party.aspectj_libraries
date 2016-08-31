@@ -2,7 +2,7 @@ sbtPlugin := false
 
 name := "imce.third_party.aspectj_scala_libraries"
 
-moduleName := "imce.third_party.aspectj_scala_libraries"
+moduleName := name.value
 
 organization := "gov.nasa.jpl.imce"
 
