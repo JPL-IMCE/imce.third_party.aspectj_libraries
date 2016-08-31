@@ -1,6 +1,6 @@
 sbtPlugin := false
 
-name := "imce.third_party.aspectj_scala_libraries"
+name := "imce.third_party.aspectj_libraries"
 
 moduleName := name.value
 
