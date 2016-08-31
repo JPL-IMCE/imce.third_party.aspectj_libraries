@@ -13,8 +13,8 @@ openssl aes-256-cbc -pass pass:$ENCRYPTION_PASSWORD -in credentials.sbt.enc -out
 openssl aes-256-cbc -pass pass:$ENCRYPTION_PASSWORD -in deploy_key.enc -out local.deploy_key -d
 
 chmod 600 local.*
-eval `ssh-agent -s`
-ssh-add local.deploy_key
+mv local.deploy_key $HOME/.ssh/id_rsa
+
 git config --global push.default simple
 git config --global user.email "nobody@nobody.org"
 git config --global user.name "Travis CI"
